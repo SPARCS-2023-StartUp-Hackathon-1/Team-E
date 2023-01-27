@@ -58,11 +58,11 @@ class MicrophoneStream(object):
             channels=1,
             rate=self._rate,
             input=True,
-            frames_per_buffer=self._chunk,
+            frames_per_buffer = self._chunk,
             # Run the audio stream asynchronously to fill the buffer object.
             # This is necessary so that the input device's buffer doesn't
             # overflow while the calling thread makes network requests, etc.
-            stream_callback=self._fill_buffer,
+            stream_callback = self._fill_buffer,
         )
 
         self.closed = False
@@ -143,7 +143,6 @@ def listen_print_loop(responses):
         if not result.is_final:
             sys.stdout.write(transcript + overwrite_chars + "\r")
             sys.stdout.flush()
-
             num_chars_printed = len(transcript)
 
         else:
