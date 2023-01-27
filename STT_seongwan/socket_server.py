@@ -39,7 +39,7 @@ def threaded(client_socket, addr):
 client_sockets = [] # 서버에 접속한 클라이언트 목록
 
 # 서버 IP 및 열어줄 포트
-HOST = '127.0.0.1'
+HOST = '192.168.1.10'
 PORT = 9999
 
 # 서버 소켓 생성
