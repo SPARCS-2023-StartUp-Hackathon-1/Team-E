@@ -1,17 +1,27 @@
+'''
+    Server program to receive speech text from each users, and
+    create a whole trascript and user-specific transcript.
+'''
+
 import socket
 from _thread import *
 
-# 쓰레드에서 실행되는 코드입니다.
-# 접속한 클라이언트마다 새로운 쓰레드가 생성되어 통신을 하게 됩니다.
+# Socket connection parameters
+HOST = '192.168.1.76'
+PORT = 9999
+
+client_sockets = []
+whole_transcript = []
+client_transcript = {}
+
+# Dedicated thread function for receiving speech text from each users
 def threaded(client_socket, addr):
     print('>> Connected by :', addr[0], ':', addr[1])
 
-    # 클라이언트가 접속을 끊을 때 까지 반복합니다.
+    # Repeat until user disconnects
     while True:
 
         try:
-
-            # 데이터가 수신되면 클라이언트에 다시 전송합니다.(에코)
             data = client_socket.recv(1024)
 
             if not data:
@@ -19,12 +29,9 @@ def threaded(client_socket, addr):
                 break
 
             print('>> Received from ' + addr[0], ':', addr[1], data.decode())
+            whole_transcript.append({addr[0]:data.decode()})
+            client_transcript[addr[0]].append([data.decode()])
 
-            # 서버에 접속한 클라이언트들에게 채팅 보내기
-            # 메세지를 보낸 본인을 제외한 서버에 접속한 클라이언트에게 메세지 보내기
-            for client in client_sockets :
-                if client != client_socket :
-                    client.send(data)
 
         except ConnectionResetError as e:
             print('>> Disconnected by ' + addr[0], ':', addr[1])
@@ -36,30 +43,29 @@ def threaded(client_socket, addr):
 
     client_socket.close()
 
-client_sockets = [] # 서버에 접속한 클라이언트 목록
 
-# 서버 IP 및 열어줄 포트
-HOST = '127.0.0.1'
-PORT = 9999
+def main():
+    print('>> Server Start')
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen()
 
-# 서버 소켓 생성
-print('>> Server Start')
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind((HOST, PORT))
-server_socket.listen()
+    try:
+        while True:
+            print('>> Waiting for connection...')
 
-try:
-    while True:
-        print('>> Wait')
+            client_socket, addr = server_socket.accept()
+            client_sockets.append(client_socket)
+            client_transcript[addr[0]] = []
+            start_new_thread(threaded, (client_socket, addr))
+            print("Number of clients: ", len(client_sockets))
+            
+    except Exception as e :
+        print (e)
 
-        client_socket, addr = server_socket.accept()
-        client_sockets.append(client_socket)
-        start_new_thread(threaded, (client_socket, addr))
-        print("참가자 수 : ", len(client_sockets))
-        
-except Exception as e :
-    print ('에러는? : ',e)
+    finally:
+        server_socket.close()
 
-finally:
-    server_socket.close()
+if __name__ == "__main__":
+    main()
