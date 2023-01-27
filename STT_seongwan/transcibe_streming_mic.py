@@ -145,7 +145,7 @@ def listen_print_loop(responses):
             sys.stdout.flush()
             num_chars_printed = len(transcript)
 
-        else:
+        else: ### 문맥이 끝났을 때 --> 서버로 보내기
             print(transcript + overwrite_chars)
 
             # Exit recognition if any of the transcribed phrases could be
@@ -153,7 +153,7 @@ def listen_print_loop(responses):
             if re.search(r"\b(exit|quit)\b", transcript, re.I):
                 print("Exiting..")
                 break
-
+            
             num_chars_printed = 0
 
 
