@@ -28,7 +28,7 @@
         src: url('/fonts/GmarketSansTTFMedium.ttf');
       }
       @font-face {
-        font-family: 'gmarket';
+        font-family: 'g_bold';
         src: url('/fonts/GmarketSansTTFBold.ttf');
       }
     </style>
@@ -49,7 +49,7 @@
 						<a
 							style="
 							color: #4766b8; 
-							font-family: 'gmarket'; 
+							font-family: 'g_bold'; 
 							font-weight: bold; 
 							margin:0; 
 							margin-left: 10%;
@@ -189,37 +189,108 @@
 						<img onclick="micClicked()" id="mic" src="images/mic-on.svg" style="margin-left: 10px; max-height: 115px;" />
 						<img onclick="camClicked()" id="cam" src="images/cam-on.svg" style="margin-left: 10px; max-height: 115px;" />
 						<img onclick="summClicked()" id="summ" src="images/summary-on.svg" style="margin-left: 10px; max-height: 115px;" />
-					</div>
-				</div>
-                
-				<div class="chat" style="
-				width: 400px; background-color: 'white';
-				box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
-				flex-grow: 1;
-				">
-					<div style="display: flex; flex-direction: row; align-items: flex-start;">
-						<div id="right-header-1" class="right-header" onclick="setRightHeader(1)">챗봇</div>
-						<div id="right-header-2" class="right-header" onclick="setRightHeader(2)">스크립트</div>
-						<div id="right-header-3" class="right-header" onclick="setRightHeader(3)">채팅</div>
-					</div>
-                    <div></div> <!--채팅 내역-->
-                    <div style="display: flex; width: 400px; height : 20px;
-                                background-color: #E5E7EE;
-                                flex-direction: row;
-                                ">
-                        <input type="text" id="message" name="message"
-                        placeholder="메세지를 입력해주세요."
-                        style="outline: none;
-                        background-color: #CFD4E4;
-                        border-radius: 10;
-                        
-                        "
-                        >
-                        <img src="images/send-button.svg" />
 
-                    </div>
+						<img id="blue_cat" src="images/cat-blue.png" style="width: 80px; position: absolute; left: 720px;"/>
+					</div>
 				</div>
-			</div>
+                <!--오른쪽 봇 도구 부분-->
+				<div class="support" style="
+					display:flex;
+					flex-direction: column;
+					width: 400px; background-color: 'white';
+					box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
+				">
+					<ul style="display: flex; flex-direction: row; align-items: flex-start; height: 50px;">
+						<li id="right-header-1" data-tab="tab-1" class="right-header right-header-selected-1" onclick="setRightHeader(1)">챗봇</li>
+						<li id="right-header-2" data-tab="tab-2" class="right-header" onclick="setRightHeader(2)">스크립트</li>
+						<li id="right-header-3" data-tab="tab-3" class="right-header" onclick="setRightHeader(3)">채팅</li>
+					</ul>
+				<div id="tab-1" class="tab-content current">
+					<!--채팅 내역-->
+					<div id="chats" style="
+					display: flex;
+					flex:1;
+					flex-direction: column;
+					padding-right: 10px;
+					">
+						<!-- 내 채팅 말풍선-->
+						<div style="display:flex; flex-direction: row-reverse; align-items: flex-end;">
+							<div id="my_chat" class="chats"
+								style="
+								margin-left:10px;
+								
+								border-end-end-radius: 0px;
+								background-color: #4766b8;
+								color: #ffffff;
+								">채팅내용입니다.
+							</div>
+							<div id="my_chat_time"
+								style="color: #4766b8;
+								font-family: 'g';
+								font-size: 12px;
+								"
+								>
+									13:01
+							</div>
+						</div>
+						<!-- 상대 (봇) 채팅 말풍선-->
+						<div style="display:flex; flex-direction: row; align-items: flex-end;">
+							<div id="bot_chat" class="chats"
+								style="
+								border-end-start-radius: 0px;
+								margin-left:40px;
+								margin-right: 10px;
+								background-color: #F5FDFF;
+								color: #525252;
+								">봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다.
+								봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다.
+							</div>
+							<div id="bot_chat_time"
+							style="color: #4766b8;
+							font-family: 'g';
+							font-size: 12px;
+							"
+							>
+								13:01
+							</div>
+						</div>
+					</div> 
+					<div style="display: flex; width: 400px;
+								background-color: #E5E7EE;
+								flex-direction: row;
+								justify-content: center;
+								align-items: center;
+								">
+							<input type="text" id="message" name="message"
+							placeholder="메세지를 입력해주세요."
+							style="
+								outline: none;
+								background-color: #CFD4E4;
+								border-radius: 10px;
+								color: black;
+								font-family: 'g';
+								border: none;
+								height: 30px;
+								margin : 5px;
+								padding-left: 10px;
+								flex: 1;
+								"
+						>
+						<img src="images/send-button.svg" height="30px"
+						style="cursor: pointer"
+						onclick="deleteMessage()"
+						onkeyup="if(window.event.keyCode==13){deleteMessage}"/>
+
+					</div>
+					</div>
+					<div id="tab-2" class="tab-content">
+						탭 투 내용
+					</div>
+					<div id="tab-3" class="tab-content">
+						탭 쓰리 내용
+					</div>
+				</div>
+				</div>
 			</div>
 				<div id="textentryBox" onsubmit="sendText()" style="display: none">
 				<input type="text" id="textentryField" /><br />
@@ -260,26 +331,43 @@
             let rh2 = document.querySelector('#right-header-2');
             let rh3 = document.querySelector('#right-header-3');
 
+			const content1 = document.getElementById('tab-1');
+			const content2 = document.getElementById('tab-2');
+			const content3 = document.getElementById('tab-3');
+
             function setRightHeader(num){
                 rightHeader = num;
                 if (rightHeader == 1){
-                    console.log('rh = 1');
+                    //console.log('rh = 1');
                     rh1.className += " right-header-selected-1";
                     rh2.className = "right-header";
                     rh3.className = "right-header";
+
+					content1.className += " current";
+					content2.className = "tab-content";
+					content3.className = 'tab-content';
+					
                 } else if (rightHeader == 2){
-                    console.log('rh = 2');
+                    //console.log('rh = 2');
                     rh1.className = "right-header";
                     rh2.className += " right-header-selected-2";
                     rh3.className = "right-header";
+					content1.className = "tab-content";
+					content2.className += " current";
+					content3.className = 'tab-content';
                 } else if (rightHeader == 3) {
-                    console.log('rh = 3');
+                    //console.log('rh = 3');
                     rh1.className = "right-header";
                     rh2.className = "right-header";
                     rh3.className += " right-header-selected-3";
+					content1.className = "tab-content";
+					content2.className = 'tab-content';
+					content3.className += " current";
                 }
             }
-            
+			function deleteMessage(){
+				document.getElementById("message").value="";
+			}
         </script>
   	</body>
 </html>

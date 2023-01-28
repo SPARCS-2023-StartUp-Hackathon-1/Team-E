@@ -71,14 +71,47 @@
   border-bottom: 3px solid #3b486b;
   color: #3b486b;
 }
-#controlArea {
-  background-color: #ff8000;
+.chats {
+  border-radius: 15px;
+  font-family: 'g';
+  height: auto;
+  box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  display: inline-block;
+  width: 200px;
+  font-size: 14px;
+  margin-top: 20px;
 }
 
 body {
   background-color: #ffd0d0;
   margin-left: 0;
   margin-top: 0;
+}
+
+input::placeholder {
+  color: #9fa1b8;
+}
+ul {
+  list-style: none;
+  padding-left: 0px;
+}
+.tab-content {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
+
+.tab-content.current {
+  display: flex;
+}
+
+#controlArea {
+  background-color: #ff8000;
 }
 
 #killButton {
