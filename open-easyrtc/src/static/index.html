@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Multiparty Chatroom</title>
+    <title>Chatty Cat - 화상회의 인공지능 비서</title>
+	<link rel="shortcut icon" href="/round-cat.ico" type="image/x-icon" />
+	<link rel="ico" href="/round-cat.ico" type="image/x-icon"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="../easyrtc/easyrtc.css" />
-
     <meta
       name="viewport"
       content="width=device-width, minimum-scale=1, maximum-scale=1"
@@ -21,87 +22,264 @@
       crossorigin
       src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
     ></script>
+    <style type="text/css">
+      @font-face {
+        font-family: 'g';
+        src: url('/fonts/GmarketSansTTFMedium.ttf');
+      }
+      @font-face {
+        font-family: 'gmarket';
+        src: url('/fonts/GmarketSansTTFBold.ttf');
+      }
+    </style>
   </head>
 
-  <body onload="appInit()">
-    <div id="fullpage" class="boxCommon" style="background-color: #f3f5f9">
-      <div id="root"></div>
-      <video
-        id="box0"
-        class="transit boxCommon thumbCommon easyrtcMirror"
-        muted="muted"
-        volume="0"
-        autoplay="autoplay"
-        playsinline="playsinline"
-      ></video>
-      <video
-        id="box1"
-        class="transit boxCommon thumbCommon"
-        style="visibility: hidden"
-        autoplay="autoplay"
-        playsinline="playsinline"
-      ></video>
-      <video
-        id="box2"
-        class="transit boxCommon thumbCommon"
-        style="visibility: hidden"
-        autoplay="autoplay"
-        playsinline="playsinline"
-      ></video>
-      <video
-        id="box3"
-        class="transit boxCommon thumbCommon"
-        style="visibility: hidden"
-        autoplay="autoplay"
-        playsinline="playsinline"
-      ></video>
-      <div id="textentryBox" onsubmit="sendText()" style="display: none">
-        <input
-          type="text"
-          id="textentryField"
-          class="transit boxcommon"
-        /><br />
-        <button
-          id="textentrySubmit"
-          style="float: right; margin-right: 1em"
-          onclick="sendText()"
-        >
-          Send
-        </button>
-        <button
-          id="textentryCancel"
-          style="float: left; margin-left: 1em"
-          onclick="cancelText()"
-        >
-          Cancel
-        </button>
-      </div>
+  <body onload="appInit()" style="background-color: #f3f5f9">
+		<div id="fullpage" style="background-color:#f3f5f9; width: auto; height: auto;flex: 1">
+			<div style="display: flex; flex-direction: 'row'">
+				<div style="flex-grow: 3;">
+					<div class='header' style="
+					display: flex;
+					flex-direction: row;
+					align-items:flex-end;
+					height: 70px;
+					margin-bottom: 2%;
+					margin-top: -15px;
+					">
+						<a
+							style="
+							color: #4766b8; 
+							font-family: 'gmarket'; 
+							font-weight: bold; 
+							margin:0; 
+							margin-left: 10%;
+							font-size: 35px;
+							"
+						>
+							Chatty Cat
+            			</a>
+						<img src="images/round-cat.png" style="max-height: 55px; margin-left: 10px; margin-bottom: -10px;" />
+						<div
+							style="
+							background-color: #4766b8;
+							border-radius: 25px;
+							width: 300px;
+							height: 35px;
+							display: flex;
+							align-items: center;
+							justify-content: flex-start;
+							margin-left: 200px;
+							box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
+              				margin-right: 5px;
+						">
+							<img src="images/green-circle.svg" style="margin-right: 10px; margin-left: 13px" />
+							<a style="color: white; font-family: 'g';">Meeting Room / Test</a>
+							<img src="images/copy-icon.svg" style="margin-left: 40px; max-height: 20px;" />
+						</div>
+						<script>
+							var minutes = 0;
+							var seconds = 0;
 
-      <img
-        id="killButton"
-        class="transit boxCommon"
-        onclick="killActiveBox()"
-        src="images/button_close.png"
-        style="display: none; z-index: 3"
-        alt="close button"
-      />
-      <img
-        id="muteButton"
-        class="transit boxCommon"
-        onclick="muteActiveBox()"
-        src="images/button_mute.png"
-        style="display: none; z-index: 3"
-        alt="mute button"
-      />
-      <img
-        id="textEntryButton"
-        class="transit boxCommon"
-        onclick="showTextEntry()"
-        src="images/textEntry.png"
-        style="z-index: 3; display: none"
-        alt="text button"
-      />
-    </div>
-    <script type="text/javascript"></script>
-  </body>
+							setInterval(function() {
+							seconds++;
+							if (seconds === 60) {
+								minutes++;
+								seconds = 0;
+							}
+							
+							document.getElementById("minutes").innerHTML = String(minutes).padStart(2, "0");
+							document.getElementById("seconds").innerHTML = String(seconds).padStart(2, "0");
+							}, 1000);
+						</script>
+						<div
+							id="timer"
+							style="
+							background-color: #edf0f8;
+							border-radius: 30px;
+							font-family: 'g';
+							color: #4766b8;
+							height: 35px;
+							width: 100px;
+							align-items: center;
+							justify-content:center;
+							display: flex;
+							box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
+							"
+						>
+							<img src="images/green-circle.svg" style='height:10px; margin-right:10px;'/>
+							<span id="minutes"></span>:<span id="seconds"></span>
+						</div>
+					</div>
+					<div style="margin-left:10%;">
+						<div class="videoBox1">
+							<video
+								id="box0"
+								muted="muted"
+								volume="0"
+								autoplay="autoplay"
+								playsinline="playsinline"
+								style="width: 100%; height: 270px; background-color:white; object-fit:fill; border-top-left-radius: 50px;"
+							></video>
+							<video
+								id="box1"
+								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-top-right-radius: 50px;"
+								autoplay="autoplay"
+								playsinline="playsinline"
+							></video>
+						</div>
+						<div class="videoBox2">
+							<video
+								id="box2"
+								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-bottom-left-radius: 50px;"
+								autoplay="autoplay"
+								playsinline="playsinline"
+							></video>
+							<video
+								id="box3"
+								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-bottom-right-radius: 50px;"
+								autoplay="autoplay"
+								playsinline="playsinline"
+							></video>
+						</div>
+					</div>
+					<script>
+						var micisClicked = false;
+						var camisClicked = false;
+						var summisClicked = false;
+
+						function micClicked() {
+							var image = document.querySelector('#mic');
+							if (micisClicked) {
+								image.src = 'images/mic-on.svg';
+								micisClicked = false;
+							} else {
+								image.src = 'images/mic-off.svg';
+								micisClicked = true;
+							}
+						}
+						function camClicked() {
+							var image = document.querySelector('#cam');
+							if (camisClicked) {
+								image.src = 'images/cam-on.svg';
+								camisClicked = false;
+							} else {
+								image.src = 'images/cam-off.svg';
+								//video = getIthVideo(0);
+								//hideVideo(video)
+								camisClicked = true;
+							}
+						}
+						function summClicked() {
+							var image = document.querySelector('#summ');
+							if (summisClicked) {
+								image.src = 'images/summary-on.svg';
+								summisClicked = false;
+							} else {
+								image.src = 'images/summary-off.svg';
+								summisClicked = true;
+							}
+						}
+						function leave(){
+							window.close();
+						}
+            
+         			</script>
+					<div style="background-color: #f3f5f9; display:flex; align-items: center; justify-content: center; ">
+						<img onclick="leave()" src="images/leave-meeting.svg" style="margin-left: 10px; max-height: 100px;" /> 
+						<img onclick="micClicked()" id="mic" src="images/mic-on.svg" style="margin-left: 10px; max-height: 115px;" />
+						<img onclick="camClicked()" id="cam" src="images/cam-on.svg" style="margin-left: 10px; max-height: 115px;" />
+						<img onclick="summClicked()" id="summ" src="images/summary-on.svg" style="margin-left: 10px; max-height: 115px;" />
+					</div>
+				</div>
+                
+				<div class="chat" style="
+				width: 400px; background-color: 'white';
+				box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
+				flex-grow: 1;
+				">
+					<div style="display: flex; flex-direction: row; align-items: flex-start;">
+						<div id="right-header-1" class="right-header" onclick="setRightHeader(1)">챗봇</div>
+						<div id="right-header-2" class="right-header" onclick="setRightHeader(2)">스크립트</div>
+						<div id="right-header-3" class="right-header" onclick="setRightHeader(3)">채팅</div>
+					</div>
+                    <div></div> <!--채팅 내역-->
+                    <div style="display: flex; width: 400px; height : 20px;
+                                background-color: #E5E7EE;
+                                flex-direction: row;
+                                ">
+                        <input type="text" id="message" name="message"
+                        placeholder="메세지를 입력해주세요."
+                        style="outline: none;
+                        background-color: #CFD4E4;
+                        border-radius: 10;
+                        
+                        "
+                        >
+                        <img src="images/send-button.svg" />
+
+                    </div>
+				</div>
+			</div>
+			</div>
+				<div id="textentryBox" onsubmit="sendText()" style="display: none">
+				<input type="text" id="textentryField" /><br />
+				<button style="float: right; margin-right: 1em" onclick="sendText()">
+					Send
+				</button>
+				<button style="float: left; margin-left: 1em" onclick="cancelText()">
+					Cancel
+				</button>
+			</div>
+
+			<img
+				id="killButton"
+				onclick="killActiveBox()"
+				src="images/button_close.png"
+				style="display: none; z-index: 3;visibility:hidden"
+				alt="close button"
+			/>
+			<img
+				id="muteButton"
+				onclick="muteActiveBox()"
+				src="images/button_mute.png"
+				style="display: none; z-index: 3;visibility:hidden"
+				alt="mute button"
+			/>
+			<img 
+				id="textEntryButton" 
+				class="transit boxCommon"
+				onclick ="showTextEntry()" 
+				src="images/textEntry.png" 
+				style="z-index:3;display:none;visibility:hidden" 
+				alt="text button" 
+			/>
+		</div>
+        <script>
+            let rightHeader = 1;
+            let rh1 = document.querySelector('#right-header-1');
+            let rh2 = document.querySelector('#right-header-2');
+            let rh3 = document.querySelector('#right-header-3');
+
+            function setRightHeader(num){
+                rightHeader = num;
+                if (rightHeader == 1){
+                    console.log('rh = 1');
+                    rh1.className += " right-header-selected-1";
+                    rh2.className = "right-header";
+                    rh3.className = "right-header";
+                } else if (rightHeader == 2){
+                    console.log('rh = 2');
+                    rh1.className = "right-header";
+                    rh2.className += " right-header-selected-2";
+                    rh3.className = "right-header";
+                } else if (rightHeader == 3) {
+                    console.log('rh = 3');
+                    rh1.className = "right-header";
+                    rh2.className = "right-header";
+                    rh3.className += " right-header-selected-3";
+                }
+            }
+            
+        </script>
+  	</body>
 </html>
