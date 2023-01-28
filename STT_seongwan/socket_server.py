@@ -19,6 +19,7 @@ COMMAND = ["A가 한 말 요약,정리해줘","지금까지 회의 내용 요약
 HOST = '192.168.1.10'
 PORT = 9999
 
+speaker_word_count = dict()
 client_sockets = []
 whole_transcript = []
 client_transcript = {}
@@ -90,6 +91,19 @@ def get_user_script(command) : # 특정 유저가 지금까지 한 말 요약하
                 text += value
     return (name, text)
 
+def get_speaker_word_count(transcript): # 사람별로 말한 문자열 길이 딕셔너리 반환하는 함수
+    speaker_word_count = {}
+    for item in transcript:
+        for speaker, speech in item.items():
+            if speaker in speaker_word_count:
+                speaker_word_count[speaker] += len(speech)
+            else:
+                speaker_word_count[speaker] = len(speech)
+    return speaker_word_count
+
+def sort_transcript_by_length(transcript_dict): # 딕셔너리의 value 값 기준으로 정렬
+    return dict(sorted(transcript_dict.items(), key=lambda item: item[1], reverse=True))
+
 def get_full_script() : # 지금까지 회의 내용 요약하기
     text = ""
     for transcript in whole_transcript :
@@ -114,6 +128,7 @@ def threaded(client_socket, addr):
             text_data, username = data.decode().split(';')
             print('>> Received from : ' + username," data : ", text_data)
             whole_transcript.append({username:text_data})
+            speaker_word_count = sort_transcript_by_length(get_speaker_word_count(whole_transcript))
             """
             for key,value in whole_transcript :
                 print("name : ",key)
