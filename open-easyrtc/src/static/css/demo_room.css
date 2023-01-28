@@ -110,6 +110,23 @@ ul {
   display: flex;
 }
 
+.short-blink {
+  -webkit-animation: blink 0.7s linear infinite;
+  -webkit-animation-direction: alternate;
+}
+.long-blink {
+  -webkit-animation: blink 1.5s linear infinite;
+  -webkit-animation-direction: alternate;
+}
+@keyframes blink {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+  }
+}
+
 #controlArea {
   background-color: #ff8000;
 }

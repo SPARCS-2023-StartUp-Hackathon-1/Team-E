@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Chatty Cat - 화상회의 인공지능 비서</title>
-	<link rel="shortcut icon" href="/round-cat.ico" type="image/x-icon" />
-	<link rel="ico" href="/round-cat.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/round-cat.ico" type="image/x-icon" />
+    <link rel="ico" href="/round-cat.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="../easyrtc/easyrtc.css" />
     <meta
@@ -18,6 +18,7 @@
       crossorigin
       src="https://unpkg.com/react@17/umd/react.production.min.js"
     ></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script
       crossorigin
       src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
@@ -35,335 +36,521 @@
   </head>
 
   <body onload="appInit()" style="background-color: #f3f5f9">
-		<div id="fullpage" style="background-color:#f3f5f9; width: auto; height: auto;flex: 1">
-			<div style="display: flex; flex-direction: 'row'">
-				<div style="flex-grow: 3;">
-					<div class='header' style="
-					display: flex;
-					flex-direction: row;
-					align-items:flex-end;
-					height: 70px;
-					margin-bottom: 2%;
-					margin-top: -15px;
-					">
-						<a
-							style="
-							color: #4766b8; 
-							font-family: 'g_bold'; 
-							font-weight: bold; 
-							margin:0; 
-							margin-left: 10%;
-							font-size: 35px;
-							"
-						>
-							Chatty Cat
-            			</a>
-						<img src="images/round-cat.png" style="max-height: 55px; margin-left: 10px; margin-bottom: -10px;" />
-						<div
-							style="
-							background-color: #4766b8;
-							border-radius: 25px;
-							width: 300px;
-							height: 35px;
-							display: flex;
-							align-items: center;
-							justify-content: flex-start;
-							margin-left: 200px;
-							box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
-              				margin-right: 5px;
-						">
-							<img src="images/green-circle.svg" style="margin-right: 10px; margin-left: 13px" />
-							<a style="color: white; font-family: 'g';">Meeting Room / Test</a>
-							<img src="images/copy-icon.svg" style="margin-left: 40px; max-height: 20px;" />
-						</div>
-						<script>
-							var minutes = 0;
-							var seconds = 0;
+    <div
+      id="fullpage"
+      style="background-color: #f3f5f9; width: auto; height: auto; flex: 1"
+    >
+      <div style="display: flex; flex-direction: 'row'">
+        <div style="flex-grow: 3">
+          <div
+            class="header"
+            style="
+              display: flex;
+              flex-direction: row;
+              align-items: flex-end;
+              height: 70px;
+              margin-bottom: 2%;
+              margin-top: -15px;
+            "
+          >
+            <a
+              style="
+                color: #4766b8;
+                font-family: 'g_bold';
+                font-weight: bold;
+                margin: 0;
+                margin-left: 10%;
+                font-size: 35px;
+              "
+            >
+              Chatty Cat
+            </a>
+            <img
+              src="images/round-cat.png"
+              style="max-height: 55px; margin-left: 10px; margin-bottom: -10px"
+            />
+            <div
+              style="
+                background-color: #4766b8;
+                border-radius: 25px;
+                width: 300px;
+                height: 35px;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                margin-left: 200px;
+                box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
+                margin-right: 5px;
+              "
+            >
+              <img
+                src="images/green-circle.svg"
+                style="margin-right: 10px; margin-left: 13px"
+              />
+              <a style="color: white; font-family: 'g'">Meeting Room / Test</a>
+              <img
+                src="images/copy-icon.svg"
+                style="margin-left: 40px; max-height: 20px"
+              />
+            </div>
+            <script>
+              var minutes = 0;
+              var seconds = 0;
 
-							setInterval(function() {
-							seconds++;
-							if (seconds === 60) {
-								minutes++;
-								seconds = 0;
-							}
-							
-							document.getElementById("minutes").innerHTML = String(minutes).padStart(2, "0");
-							document.getElementById("seconds").innerHTML = String(seconds).padStart(2, "0");
-							}, 1000);
-						</script>
-						<div
-							id="timer"
-							style="
-							background-color: #edf0f8;
-							border-radius: 30px;
-							font-family: 'g';
-							color: #4766b8;
-							height: 35px;
-							width: 100px;
-							align-items: center;
-							justify-content:center;
-							display: flex;
-							box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
-							"
-						>
-							<img src="images/green-circle.svg" style='height:10px; margin-right:10px;'/>
-							<span id="minutes"></span>:<span id="seconds"></span>
-						</div>
-					</div>
-					<div style="margin-left:10%;">
-						<div class="videoBox1">
-							<video
-								id="box0"
-								muted="muted"
-								volume="0"
-								autoplay="autoplay"
-								playsinline="playsinline"
-								style="width: 100%; height: 270px; background-color:white; object-fit:fill; border-top-left-radius: 50px;"
-							></video>
-							<video
-								id="box1"
-								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-top-right-radius: 50px;"
-								autoplay="autoplay"
-								playsinline="playsinline"
-							></video>
-						</div>
-						<div class="videoBox2">
-							<video
-								id="box2"
-								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-bottom-left-radius: 50px;"
-								autoplay="autoplay"
-								playsinline="playsinline"
-							></video>
-							<video
-								id="box3"
-								style="visibility: hidden; width: 100%; height: 270px;background-color:white;object-fit:fill; border-bottom-right-radius: 50px;"
-								autoplay="autoplay"
-								playsinline="playsinline"
-							></video>
-						</div>
-					</div>
-					<script>
-						var micisClicked = false;
-						var camisClicked = false;
-						var summisClicked = false;
-
-						function micClicked() {
-							var image = document.querySelector('#mic');
-							if (micisClicked) {
-								image.src = 'images/mic-on.svg';
-								micisClicked = false;
-							} else {
-								image.src = 'images/mic-off.svg';
-								micisClicked = true;
-							}
-						}
-						function camClicked() {
-							var image = document.querySelector('#cam');
-							if (camisClicked) {
-								image.src = 'images/cam-on.svg';
-								camisClicked = false;
-							} else {
-								image.src = 'images/cam-off.svg';
-								//video = getIthVideo(0);
-								//hideVideo(video)
-								camisClicked = true;
-							}
-						}
-						function summClicked() {
-							var image = document.querySelector('#summ');
-							if (summisClicked) {
-								image.src = 'images/summary-on.svg';
-								summisClicked = false;
-							} else {
-								image.src = 'images/summary-off.svg';
-								summisClicked = true;
-							}
-						}        
-         			</script>
-					<div style="background-color: #f3f5f9; display:flex; align-items: center; justify-content: center; ">
-						<img onclick="document.location.href='statics.html'" src="images/leave-meeting.svg" style="margin-left: 10px; max-height: 100px;" /> 
-						<img onclick="micClicked()" id="mic" src="images/mic-on.svg" style="margin-left: 10px; max-height: 115px;" />
-						<img onclick="camClicked()" id="cam" src="images/cam-on.svg" style="margin-left: 10px; max-height: 115px;" />
-						<img onclick="summClicked()" id="summ" src="images/summary-on.svg" style="margin-left: 10px; max-height: 115px;" />
-
-						<img id="blue_cat" src="images/cat-blue.png" style="width: 80px; position: absolute; left: 720px;"/>
-					</div>
-				</div>
-                <!--오른쪽 봇 도구 부분-->
-				<div class="support" style="
-					display:flex;
-					flex-direction: column;
-					width: 400px; background-color: 'white';
-					box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
-				">
-					<ul style="display: flex; flex-direction: row; align-items: flex-start; height: 50px;">
-						<li id="right-header-1" data-tab="tab-1" class="right-header right-header-selected-1" onclick="setRightHeader(1)">챗봇</li>
-						<li id="right-header-2" data-tab="tab-2" class="right-header" onclick="setRightHeader(2)">스크립트</li>
-						<li id="right-header-3" data-tab="tab-3" class="right-header" onclick="setRightHeader(3)">채팅</li>
-					</ul>
-				<div id="tab-1" class="tab-content current">
-					<!--채팅 내역-->
-					<div id="chats" style="
-					display: flex;
-					flex:1;
-					flex-direction: column;
-					padding-right: 10px;
-					">
-						<!-- 내 채팅 말풍선-->
-						<div style="display:flex; flex-direction: row-reverse; align-items: flex-end;">
-							<div id="my_chat" class="chats"
-								style="
-								margin-left:10px;
-								
-								border-end-end-radius: 0px;
-								background-color: #4766b8;
-								color: #ffffff;
-								">채팅내용입니다.
-							</div>
-							<div id="my_chat_time"
-								style="color: #4766b8;
-								font-family: 'g';
-								font-size: 12px;
-								"
-								>
-									13:01
-							</div>
-						</div>
-						<!-- 상대 (봇) 채팅 말풍선-->
-						<div style="display:flex; flex-direction: row; align-items: flex-end;">
-							<div id="bot_chat" class="chats"
-								style="
-								border-end-start-radius: 0px;
-								margin-left:40px;
-								margin-right: 10px;
-								background-color: #F5FDFF;
-								color: #525252;
-								">봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다.
-								봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다.
-							</div>
-							<div id="bot_chat_time"
-							style="color: #4766b8;
-							font-family: 'g';
-							font-size: 12px;
-							"
-							>
-								13:01
-							</div>
-						</div>
-					</div> 
-					<div style="display: flex; width: 400px;
-								background-color: #E5E7EE;
-								flex-direction: row;
-								justify-content: center;
-								align-items: center;
-								">
-							<input type="text" id="message" name="message"
-							placeholder="메세지를 입력해주세요."
-							style="
-								outline: none;
-								background-color: #CFD4E4;
-								border-radius: 10px;
-								color: black;
-								font-family: 'g';
-								border: none;
-								height: 30px;
-								margin : 5px;
-								padding-left: 10px;
-								flex: 1;
-								"
-						>
-						<img src="images/send-button.svg" height="30px"
-						style="cursor: pointer"
-						onclick="deleteMessage()"
-						onkeyup="if(window.event.keyCode==13){deleteMessage}"/>
-
-					</div>
-					</div>
-					<div id="tab-2" class="tab-content">
-						탭 투 내용
-					</div>
-					<div id="tab-3" class="tab-content">
-						탭 쓰리 내용
-					</div>
-				</div>
-				</div>
-			</div>
-				<div id="textentryBox" onsubmit="sendText()" style="display: none">
-				<input type="text" id="textentryField" /><br />
-				<button style="float: right; margin-right: 1em" onclick="sendText()">
-					Send
-				</button>
-				<button style="float: left; margin-left: 1em" onclick="cancelText()">
-					Cancel
-				</button>
-			</div>
-
-			<img
-				id="killButton"
-				onclick="killActiveBox()"
-				src="images/button_close.png"
-				style="display: none; z-index: 3;visibility:hidden"
-				alt="close button"
-			/>
-			<img
-				id="muteButton"
-				onclick="muteActiveBox()"
-				src="images/button_mute.png"
-				style="display: none; z-index: 3;visibility:hidden"
-				alt="mute button"
-			/>
-			<img 
-				id="textEntryButton" 
-				class="transit boxCommon"
-				onclick ="showTextEntry()" 
-				src="images/textEntry.png" 
-				style="z-index:3;display:none;visibility:hidden" 
-				alt="text button" 
-			/>
-		</div>
-        <script>
-            let rightHeader = 1;
-            let rh1 = document.querySelector('#right-header-1');
-            let rh2 = document.querySelector('#right-header-2');
-            let rh3 = document.querySelector('#right-header-3');
-
-			const content1 = document.getElementById('tab-1');
-			const content2 = document.getElementById('tab-2');
-			const content3 = document.getElementById('tab-3');
-
-            function setRightHeader(num){
-                rightHeader = num;
-                if (rightHeader == 1){
-                    //console.log('rh = 1');
-                    rh1.className += " right-header-selected-1";
-                    rh2.className = "right-header";
-                    rh3.className = "right-header";
-
-					content1.className += " current";
-					content2.className = "tab-content";
-					content3.className = 'tab-content';
-					
-                } else if (rightHeader == 2){
-                    //console.log('rh = 2');
-                    rh1.className = "right-header";
-                    rh2.className += " right-header-selected-2";
-                    rh3.className = "right-header";
-					content1.className = "tab-content";
-					content2.className += " current";
-					content3.className = 'tab-content';
-                } else if (rightHeader == 3) {
-                    //console.log('rh = 3');
-                    rh1.className = "right-header";
-                    rh2.className = "right-header";
-                    rh3.className += " right-header-selected-3";
-					content1.className = "tab-content";
-					content2.className = 'tab-content';
-					content3.className += " current";
+              setInterval(function () {
+                seconds++;
+                if (seconds === 60) {
+                  minutes++;
+                  seconds = 0;
                 }
+
+                document.getElementById('minutes').innerHTML = String(
+                  minutes
+                ).padStart(2, '0');
+                document.getElementById('seconds').innerHTML = String(
+                  seconds
+                ).padStart(2, '0');
+              }, 1000);
+            </script>
+            <div
+              id="timer"
+              style="
+                background-color: #edf0f8;
+                border-radius: 30px;
+                font-family: 'g';
+                color: #4766b8;
+                height: 35px;
+                width: 100px;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                box-shadow: 0 8px 30px 0 rgba(24, 58, 66, 0.3);
+              "
+            >
+              <img
+                src="images/green-circle.svg"
+                style="height: 10px; margin-right: 10px"
+              />
+              <span id="minutes"></span>:<span id="seconds"></span>
+            </div>
+          </div>
+          <div style="margin-left: 10%">
+            <div class="videoBox1">
+              <video
+                id="box0"
+                muted="muted"
+                volume="0"
+                autoplay="autoplay"
+                playsinline="playsinline"
+                style="
+                  width: 100%;
+                  height: 270px;
+                  background-color: white;
+                  object-fit: fill;
+                  border-top-left-radius: 50px;
+                "
+              ></video>
+              <video
+                id="box1"
+                style="
+                  visibility: hidden;
+                  width: 100%;
+                  height: 270px;
+                  background-color: white;
+                  object-fit: fill;
+                  border-top-right-radius: 50px;
+                "
+                autoplay="autoplay"
+                playsinline="playsinline"
+              ></video>
+            </div>
+            <div class="videoBox2">
+              <video
+                id="box2"
+                style="
+                  visibility: hidden;
+                  width: 100%;
+                  height: 270px;
+                  background-color: white;
+                  object-fit: fill;
+                  border-bottom-left-radius: 50px;
+                "
+                autoplay="autoplay"
+                playsinline="playsinline"
+              ></video>
+              <video
+                id="box3"
+                style="
+                  visibility: hidden;
+                  width: 100%;
+                  height: 270px;
+                  background-color: white;
+                  object-fit: fill;
+                  border-bottom-right-radius: 50px;
+                "
+                autoplay="autoplay"
+                playsinline="playsinline"
+              ></video>
+            </div>
+          </div>
+          <script>
+            var micisClicked = false;
+            var camisClicked = false;
+            var summisClicked = false;
+
+            function micClicked() {
+              var image = document.querySelector('#mic');
+              if (micisClicked) {
+                image.src = 'images/mic-on.svg';
+                micisClicked = false;
+              } else {
+                image.src = 'images/mic-off.svg';
+                micisClicked = true;
+              }
             }
-			function deleteMessage(){
-				document.getElementById("message").value="";
-			}
-        </script>
-  	</body>
+            function camClicked() {
+              var image = document.querySelector('#cam');
+              if (camisClicked) {
+                image.src = 'images/cam-on.svg';
+                camisClicked = false;
+              } else {
+                image.src = 'images/cam-off.svg';
+                //video = getIthVideo(0);
+                //hideVideo(video)
+                camisClicked = true;
+              }
+            }
+            function summClicked() {
+              var image = document.querySelector('#summ');
+              if (summisClicked) {
+                image.src = 'images/summary-on.svg';
+                summisClicked = false;
+              } else {
+                image.src = 'images/summary-off.svg';
+                summisClicked = true;
+              }
+            }
+          </script>
+          <div
+            style="
+              background-color: #f3f5f9;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <img
+              onclick="document.location.href='statics.html'"
+              src="images/leave-meeting.svg"
+              style="margin-left: 10px; max-height: 100px; cursor: pointer"
+            />
+            <img
+              onclick="micClicked()"
+              id="mic"
+              src="images/mic-on.svg"
+              style="margin-left: 10px; max-height: 115px"
+            />
+            <img
+              onclick="camClicked()"
+              id="cam"
+              src="images/cam-on.svg"
+              style="margin-left: 10px; max-height: 115px"
+            />
+            <img
+              onclick="summClicked()"
+              id="summ"
+              src="images/summary-on.svg"
+              style="margin-left: 10px; max-height: 115px"
+            />
+
+            <img
+              id="blue-cat"
+              src="images/cat-blue.png"
+              style="
+                width: 100px;
+                position: absolute;
+                left: 780px;
+                cursor: pointer;
+              "
+            />
+          </div>
+        </div>
+        <!--오른쪽 봇 도구 부분-->
+        <div
+          class="support"
+          style="
+            display: flex;
+            flex-direction: column;
+            width: 400px;
+            background-color: 'white';
+            box-shadow: 0 8px 30px 0 rgba(75, 134, 149, 0.4);
+          "
+        >
+          <ul
+            style="
+              display: flex;
+              flex-direction: row;
+              align-items: flex-start;
+              height: 50px;
+            "
+          >
+            <li
+              id="right-header-1"
+              data-tab="tab-1"
+              class="right-header right-header-selected-1"
+              onclick="setRightHeader(1)"
+            >
+              챗봇
+            </li>
+            <li
+              id="right-header-2"
+              data-tab="tab-2"
+              class="right-header"
+              onclick="setRightHeader(2)"
+            >
+              스크립트
+            </li>
+            <li
+              id="right-header-3"
+              data-tab="tab-3"
+              class="right-header"
+              onclick="setRightHeader(3)"
+            >
+              채팅
+            </li>
+          </ul>
+          <div id="tab-1" class="tab-content current">
+            <!--채팅 내역-->
+            <div
+              id="chats"
+              style="
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                padding-right: 10px;
+              "
+            >
+              <!-- 내 채팅 말풍선-->
+              <div
+                style="
+                  display: flex;
+                  flex-direction: row-reverse;
+                  align-items: flex-end;
+                "
+              >
+                <div
+                  id="my_chat"
+                  class="chats"
+                  style="
+                    margin-left: 10px;
+
+                    border-end-end-radius: 0px;
+                    background-color: #4766b8;
+                    color: #ffffff;
+                  "
+                >
+                  채팅내용입니다.
+                </div>
+                <div
+                  id="my_chat_time"
+                  style="color: #4766b8; font-family: 'g'; font-size: 12px"
+                >
+                  13:01
+                </div>
+              </div>
+              <!-- 상대 (봇) 채팅 말풍선-->
+              <div
+                style="
+                  display: flex;
+                  flex-direction: row;
+                  align-items: flex-end;
+                "
+              >
+                <div
+                  id="bot_chat"
+                  class="chats"
+                  style="
+                    border-end-start-radius: 0px;
+                    margin-left: 40px;
+                    margin-right: 10px;
+                    background-color: #f5fdff;
+                    color: #525252;
+                  "
+                >
+                  봇 채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇
+                  채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다. 봇
+                  채팅내용입니다. 봇 채팅내용입니다. 봇 채팅내용입니다.
+                </div>
+                <div
+                  id="bot_chat_time"
+                  style="color: #4766b8; font-family: 'g'; font-size: 12px"
+                >
+                  13:01
+                </div>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                width: 400px;
+                background-color: #e5e7ee;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <input
+                type="text"
+                id="message"
+                name="message"
+                placeholder="메세지를 입력해주세요."
+                style="
+                  outline: none;
+                  background-color: #cfd4e4;
+                  border-radius: 10px;
+                  color: black;
+                  font-family: 'g';
+                  border: none;
+                  height: 30px;
+                  margin: 5px;
+                  padding-left: 10px;
+                  flex: 1;
+                "
+              />
+              <img
+                src="images/send-button.svg"
+                height="30px"
+                style="cursor: pointer"
+                onclick="deleteMessage()"
+                onkeyup="if(window.event.keyCode==13){deleteMessage}"
+              />
+            </div>
+          </div>
+          <div id="tab-2" class="tab-content">탭 투 내용</div>
+          <div id="tab-3" class="tab-content">탭 쓰리 내용</div>
+        </div>
+      </div>
+    </div>
+    <div id="textentryBox" onsubmit="sendText()" style="display: none">
+      <input type="text" id="textentryField" /><br />
+      <button style="float: right; margin-right: 1em" onclick="sendText()">
+        Send
+      </button>
+      <button style="float: left; margin-left: 1em" onclick="cancelText()">
+        Cancel
+      </button>
+    </div>
+
+    <img
+      id="killButton"
+      onclick="killActiveBox()"
+      src="images/button_close.png"
+      style="display: none; z-index: 3; visibility: hidden"
+      alt="close button"
+    />
+    <img
+      id="muteButton"
+      onclick="muteActiveBox()"
+      src="images/button_mute.png"
+      style="display: none; z-index: 3; visibility: hidden"
+      alt="mute button"
+    />
+    <img
+      id="textEntryButton"
+      class="transit boxCommon"
+      onclick="showTextEntry()"
+      src="images/textEntry.png"
+      style="z-index: 3; display: none; visibility: hidden"
+      alt="text button"
+    />
+
+    <script>
+      //tab
+      let rightHeader = 1;
+      let rh1 = document.querySelector('#right-header-1');
+      let rh2 = document.querySelector('#right-header-2');
+      let rh3 = document.querySelector('#right-header-3');
+
+      const content1 = document.getElementById('tab-1');
+      const content2 = document.getElementById('tab-2');
+      const content3 = document.getElementById('tab-3');
+
+      function setRightHeader(num) {
+        rightHeader = num;
+        if (rightHeader == 1) {
+          //console.log('rh = 1');
+          rh1.className += ' right-header-selected-1';
+          rh2.className = 'right-header';
+          rh3.className = 'right-header';
+
+          content1.className += ' current';
+          content2.className = 'tab-content';
+          content3.className = 'tab-content';
+        } else if (rightHeader == 2) {
+          //console.log('rh = 2');
+          rh1.className = 'right-header';
+          rh2.className += ' right-header-selected-2';
+          rh3.className = 'right-header';
+          content1.className = 'tab-content';
+          content2.className += ' current';
+          content3.className = 'tab-content';
+        } else if (rightHeader == 3) {
+          //console.log('rh = 3');
+          rh1.className = 'right-header';
+          rh2.className = 'right-header';
+          rh3.className += ' right-header-selected-3';
+          content1.className = 'tab-content';
+          content2.className = 'tab-content';
+          content3.className += ' current';
+        }
+      }
+      //메세지 전송 후 input text value 삭제
+      function deleteMessage() {
+        document.getElementById('message').value = '';
+      }
+
+      (function ($) {
+        var start, end, diff;
+        var clickTime = 500;
+        var longClick = new CustomEvent('longclick');
+
+        var div = document.querySelector('#blue-cat');
+        document.body.addEventListener('longclick', function (event) {});
+        let presentation = false;
+        div.onmousedown = function () {
+          start = Date.now();
+
+          div.onmouseup = function () {
+            end = Date.now();
+            diff = end - start;
+            if (diff > clickTime) {
+              //long event
+              $('#blue-cat').addClass('short-blink');
+
+              //6초 후 깜빡임 종료
+              setTimeout(() => $('#blue-cat').removeClass('short-blink'), 4000);
+            } else {
+              //short event
+              //색 초록색으로 바꾸기
+              document.body.dispatchEvent(longClick);
+              if (presentation == true) {
+                presentation = false;
+                $('#blue-cat').removeClass('long-blink');
+                document.querySelector('#blue-cat').src = 'images/cat-blue.png';
+              } else {
+                presentation = true; //발표 시작
+                $('#blue-cat').addClass('long-blink');
+                setTimeout(
+                  () =>
+                    (document.querySelector('#blue-cat').src =
+                      'images/cat-green.png'),
+                  1400
+                );
+              }
+            }
+          };
+        };
+      })(jQuery);
+    </script>
+  </body>
 </html>
