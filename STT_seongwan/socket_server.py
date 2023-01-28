@@ -1,19 +1,104 @@
-'''
-    Server program to receive speech text from each users, and
-    create a whole trascript and user-specific transcript.
-'''
 
+import openai
+import torch
+from sentence_transformers import SentenceTransformer, util
 import socket
 from _thread import *
+from transformers import pipeline
+from papago_long import translate
 
+openai.organization = "org-JuwVy84LcQyTpZiV5J75mEw6"
+openai.api_key = "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"
+openai.Engine.list()
+
+# Text embedding model
+MODEL = "text-embedding-ada-002"
+# 우리의 AI 비서가 처리 가능한 명령어
+COMMAND = ["A가 한 말 요약,정리해줘","지금까지 회의 내용 요약,정리해줘","캘린더에 저장해줘","회의 참여도 알려줘"]
 # Socket connection parameters
-HOST = '192.168.1.75'
+HOST = '192.168.1.10'
 PORT = 9999
 
 client_sockets = []
-whole_transcript = dict()
-whole_transcript['박성완'] = ""
+whole_transcript = []
 client_transcript = {}
+
+def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 우리 command와 유사한거 가져오기
+    max_similaritys = []
+    query_embedding = openai.Embedding.create(input=[query], engine=MODEL)
+    query_tensor = torch.tensor(query_embedding['data'][0]['embedding'])
+    # document embedding
+    document_embedding = openai.Embedding.create(input=COMMAND, engine=MODEL)
+    for i,document in enumerate(document_embedding['data']) :
+        document_tensor = torch.tensor(document_embedding['data'][i]['embedding'])
+        similarity = (float(util.cos_sim(query_tensor, document_tensor)),COMMAND[i])
+        max_similaritys.append(similarity)
+    max_similaritys.sort(key= lambda x:-x[0])
+
+    user_command = max_similaritys[0][1] # 유저가 입력한 커멘드 중에서 우리의 커멘드와 가장 유사한거 일치시키기
+
+    ### 사용자 한명 실시간 발표 요약
+    if user_command == "A가 한 말 요약,정리해줘" : 
+        name, script = get_user_script(query) # 사용자의 입력값에서 명령어랑 타겟 이름 꺼내오기
+        eng_script = translate("krTOen",script) # papago로 영어로 번역
+        eng_summerize = summerize_model(eng_script) # 영어로 번역한 발표 요약
+        kor_summerize = translate("enTOkr",eng_summerize) # 다시 한국어로 번역
+        result = name + "이 한 말을 요약해봤어요 :)\n" + kor_summerize
+        return result
+    ### 지금까지 회의 내용 요약
+    elif user_command == "지금까지 회의 내용 요약,정리해줘" : 
+        script = get_full_script() # 모든 회의록 가져오기
+        kor_summerize = translate("enTOkr",summerize_model(translate("krTOen",script)))
+        result = "지금까지의 회의 내용을 요약해 보았아요 :)\n" + kor_summerize
+        return result
+    ### 요일 캘린더에 저장
+    elif user_command == "캘린더에 저장해줘" : 
+        pass
+    ### 회의 참여도 알려주기
+    elif user_command == "회의 참여도 알려주기" : 
+        pass
+    ### chatGPT를 통한 질의응답
+    else :
+        # chatGPT에서 에러가 발생 했을 경우
+        if max_similaritys[-1][0] < 0.7 : # 이상한 명령어가 들어 왔을 경우
+            return "chatty cat이 이해할수 없는 명령어에요😢 다른 명령어를 입력해주세요"
+
+    
+    
+
+def summerize_model(data) : # 요약 모델
+    summarizer = pipeline("summarization", model="knkarthick/MEETING_SUMMARY")
+    return summarizer(data)
+
+def get_username(command) : # command에서 유저 이름 빼오기
+    names = set()
+    # script에서 이름 꺼내오기
+    for name in whole_transcript :
+        for key in name.keys() :
+            names.add(key)
+    # 명령어에서 이름 꺼내오기
+    for name in names :
+        if name in command :
+            return name
+
+def get_user_script(command) : # 특정 유저가 지금까지 한 말 요약하기
+    name = get_username(command)
+    text = ""
+    for transcript in whole_transcript :
+        for key,value in transcript.items() :
+            if(key == name) :
+                text += value
+    return (name, text)
+
+def get_full_script() : # 지금까지 회의 내용 요약하기
+    text = ""
+    for transcript in whole_transcript :
+        for key,value in transcript.items() :
+                text += value
+    return text
+
+# command에서 openAI text similarity로 우리 명령어 찾기
+# commamd에서 이름 뽑아서 script에서 찾기
 
 # Dedicated thread function for receiving speech text from each users
 def threaded(client_socket, addr):
@@ -21,27 +106,19 @@ def threaded(client_socket, addr):
 
     # Repeat until user disconnects
     while True:
-
         try:
             data = client_socket.recv(1024)
-
             if not data:
                 print('>> Disconnected by ' + addr[0], ':', addr[1])
                 break
             text_data, username = data.decode().split(';')
-
             print('>> Received from : ' + username," data : ", text_data)
-            #whole_transcript.append({'username':username, 'data' : text_data})
-            whole_transcript[username]+=text_data
-            print('whole_transcript : ', whole_transcript)
-            print(whole_transcript['박성완'])
-            print("요약본 : ")
-            print(summerize_model(whole_transcript['박성완']))
-            for i in whole_transcript :
-                print(i['username'])
-                print(i['data'])
-
-
+            whole_transcript.append({username:text_data})
+            """
+            for key,value in whole_transcript :
+                print("name : ",key)
+                print("data : ",value)
+            """
         except ConnectionResetError as e:
             print('>> Disconnected by ' + addr[0], ':', addr[1])
             break 
@@ -51,7 +128,6 @@ def threaded(client_socket, addr):
         print('remove client list : ',len(client_sockets))
 
     client_socket.close()
-
 
 def main():
     print('>> Server Start')
@@ -63,7 +139,6 @@ def main():
     try:
         while True:
             print('>> Waiting for connection...')
-
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
             client_transcript[addr[0]] = [] # addr[0] = 192.168.1.10
@@ -72,16 +147,8 @@ def main():
             
     except Exception as e :
         print (e)
-
     finally:
         server_socket.close()
-
-
-from transformers import pipeline
-def summerize_model(data):
-    summarizer = pipeline("summarization", model="knkarthick/MEETING_SUMMARY")
-    return summarizer(data)
-
 
 if __name__ == "__main__":
     main()

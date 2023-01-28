@@ -20,7 +20,7 @@ RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
 
 # Socket connection parameters
-HOST = '192.168.1.75'
+HOST = '192.168.1.10'
 PORT = 9999
 
 
@@ -108,7 +108,7 @@ def listen_print_loop(responses, client_socket):
     final one, print a newline to preserve the finalized transcription.
     """
     num_chars_printed = 0
-    username = "박성완"
+    username = "신상윤"
     for response in responses:
         if not response.results:
             continue

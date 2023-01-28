@@ -26,8 +26,10 @@ EVENT = {
   },
 }
 
+def change_event() :
+    print(EVENT['start'])
 
-def main():
+def add_calendar(time, text):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
@@ -48,31 +50,11 @@ def main():
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
-
     try:
         service = build('calendar', 'v3', credentials=creds)
         service.events().insert(calendarId='waniboyy@gmail.com', body=EVENT).execute()
-
-        # Call the Calendar API
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        print('Getting the upcoming 10 events')
-        events_result = service.events().list(calendarId='primary', timeMin=now,
-                                              maxResults=10, singleEvents=True,
-                                              orderBy='startTime').execute()
-        events = events_result.get('items', [])
-        
-        if not events:
-            print('No upcoming events found.')
-            return
-
-        # Prints the start and name of the next 10 events
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
-
     except HttpError as error:
         print('An error occurred: %s' % error)
 
 
-if __name__ == '__main__':
-    main()
+change_event()
