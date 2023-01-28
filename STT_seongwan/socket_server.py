@@ -7,7 +7,7 @@ import socket
 from _thread import *
 
 # Socket connection parameters
-HOST = '192.168.1.76'
+HOST = '192.168.1.10'
 PORT = 9999
 
 client_sockets = []
@@ -27,10 +27,14 @@ def threaded(client_socket, addr):
             if not data:
                 print('>> Disconnected by ' + addr[0], ':', addr[1])
                 break
+            text_data, username = data.decode().split(';')
 
-            print('>> Received from ' + addr[0], ':', addr[1], data.decode())
-            whole_transcript.append({addr[0]:data.decode()})
-            client_transcript[addr[0]].append([data.decode()])
+            print('>> Received from : ' + username," data : ", text_data)
+            whole_transcript.append({'username':username, 'data' : text_data})
+            print('whole_transcript : ',whole_transcript)
+            for i in whole_transcript :
+                print(i['username'])
+                print(i['data'])
 
 
         except ConnectionResetError as e:
@@ -57,7 +61,7 @@ def main():
 
             client_socket, addr = server_socket.accept()
             client_sockets.append(client_socket)
-            client_transcript[addr[0]] = []
+            client_transcript[addr[0]] = [] # addr[0] = 192.168.1.10
             start_new_thread(threaded, (client_socket, addr))
             print("Number of clients: ", len(client_sockets))
             
