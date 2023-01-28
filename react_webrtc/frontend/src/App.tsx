@@ -15,7 +15,7 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "13.125.237.243:4001";
+const SOCKET_SERVER_URL = "192.168.1.10:8080";
 
 const App = () => {
   const socketRef = useRef<SocketIOClient.Socket>();
@@ -115,8 +115,8 @@ const App = () => {
     try {
       if (!sendPCRef.current) return;
       const sdp = await sendPCRef.current.createOffer({
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
+        offerToReceiveAudio: false,
+        offerToReceiveVideo: false,
       });
       console.log("create sender offer success");
       await sendPCRef.current.setLocalDescription(
