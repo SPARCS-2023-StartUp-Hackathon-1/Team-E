@@ -4,7 +4,6 @@ import argparse
 
 YOUR_API_KEY = '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'
 
-
 def chatGPT(option, prompt, API_KEY=YOUR_API_KEY):
     if option == "캘린더에 저장해줘" :
         command = "다음의 글에서 약속 시간과 그 시간에 주제를 알려줘 : "

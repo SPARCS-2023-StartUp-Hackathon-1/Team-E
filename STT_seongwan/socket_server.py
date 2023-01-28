@@ -52,7 +52,7 @@ def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 �
         kor_summerize = translate("enTOkr",summerize_model(translate("krTOen",script)))
         result = "지금까지의 회의 내용을 요약해 보았아요 :)\n" + kor_summerize
         return result
-    ### 요일 캘린더에 저장
+    ### 회의에서 나온 요일 캘린더에 저장
     elif user_command == "캘린더에 저장해줘" : 
         pass
     ### 회의 참여도 알려주기

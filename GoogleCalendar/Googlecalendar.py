@@ -11,18 +11,23 @@ from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+event_start = datetime.datetime(2023, 5, 23, 10, 0, 0).isoformat()
+print(event_start)
+event_end = datetime.datetime(2023, 5, 23, 11, 0, 0).isoformat()
+print(event_end)
+
 
 EVENT = {
   'summary': 'Google I/O 2015',
   'location': '800 Howard St., San Francisco, CA 94103',
   'description': 'A chance to hear more about Google\'s developer products.',
   'start': {
-    'dateTime': '2023-05-22T09:00:00-07:00',
-    'timeZone': 'America/Los_Angeles',
+    'dateTime': event_start,
+    'timeZone': 'Asia/Seoul',
   },
   'end': {
-    'dateTime': '2023-05-22T17:00:00-08:00',
-    'timeZone': 'America/Los_Angeles',
+    'dateTime': event_end,
+    'timeZone': 'Asia/Seoul',
   },
 }
 
@@ -58,3 +63,4 @@ def add_calendar(time, text):
 
 
 change_event()
+add_calendar(1,2)
