@@ -7,11 +7,12 @@ import socket
 from _thread import *
 
 # Socket connection parameters
-HOST = '192.168.1.10'
+HOST = '192.168.1.75'
 PORT = 9999
 
 client_sockets = []
-whole_transcript = []
+whole_transcript = dict()
+whole_transcript['박성완'] = ""
 client_transcript = {}
 
 # Dedicated thread function for receiving speech text from each users
@@ -30,8 +31,12 @@ def threaded(client_socket, addr):
             text_data, username = data.decode().split(';')
 
             print('>> Received from : ' + username," data : ", text_data)
-            whole_transcript.append({'username':username, 'data' : text_data})
-            print('whole_transcript : ',whole_transcript)
+            #whole_transcript.append({'username':username, 'data' : text_data})
+            whole_transcript[username]+=text_data
+            print('whole_transcript : ', whole_transcript)
+            print(whole_transcript['박성완'])
+            print("요약본 : ")
+            print(summerize_model(whole_transcript['박성완']))
             for i in whole_transcript :
                 print(i['username'])
                 print(i['data'])
@@ -39,7 +44,7 @@ def threaded(client_socket, addr):
 
         except ConnectionResetError as e:
             print('>> Disconnected by ' + addr[0], ':', addr[1])
-            break
+            break 
 
     if client_socket in client_sockets :
         client_sockets.remove(client_socket)
@@ -70,6 +75,13 @@ def main():
 
     finally:
         server_socket.close()
+
+
+from transformers import pipeline
+def summerize_model(data):
+    summarizer = pipeline("summarization", model="knkarthick/MEETING_SUMMARY")
+    return summarizer(data)
+
 
 if __name__ == "__main__":
     main()
