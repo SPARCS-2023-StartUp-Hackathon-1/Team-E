@@ -38,7 +38,7 @@ def main():
     #print(chatGPT("다음의 지문에서 "+""+data).strip())
     print(chatGPT("캘린더에 저장해줘", commend))
 
-
+"""
 if __name__ == '__main__':
     main()
-
+"""
