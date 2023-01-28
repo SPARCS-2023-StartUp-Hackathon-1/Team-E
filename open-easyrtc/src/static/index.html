@@ -178,14 +178,10 @@
 								image.src = 'images/summary-off.svg';
 								summisClicked = true;
 							}
-						}
-						function leave(){
-							window.close();
-						}
-            
+						}        
          			</script>
 					<div style="background-color: #f3f5f9; display:flex; align-items: center; justify-content: center; ">
-						<img onclick="leave()" src="images/leave-meeting.svg" style="margin-left: 10px; max-height: 100px;" /> 
+						<img onclick="document.location.href='statics.html'" src="images/leave-meeting.svg" style="margin-left: 10px; max-height: 100px;" /> 
 						<img onclick="micClicked()" id="mic" src="images/mic-on.svg" style="margin-left: 10px; max-height: 115px;" />
 						<img onclick="camClicked()" id="cam" src="images/cam-on.svg" style="margin-left: 10px; max-height: 115px;" />
 						<img onclick="summClicked()" id="summ" src="images/summary-on.svg" style="margin-left: 10px; max-height: 115px;" />

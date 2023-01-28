@@ -11,26 +11,38 @@ from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+event_start = datetime.datetime(2023, 5, 23, 10, 0, 0).isoformat()
+print(event_start)
+event_end = datetime.datetime(2023, 5, 23, 11, 0, 0).isoformat()
+print(event_end)
+
 
 EVENT = {
-  'summary': 'Google I/O 2015',
-  'location': '800 Howard St., San Francisco, CA 94103',
-  'description': 'A chance to hear more about Google\'s developer products.',
+  'summary': '',
+  'location': '',
+  'description': '',
   'start': {
-    'dateTime': '2023-05-22T09:00:00-07:00',
-    'timeZone': 'America/Los_Angeles',
+    'dateTime': event_start,
+    'timeZone': 'Asia/Seoul',
   },
   'end': {
-    'dateTime': '2023-05-22T17:00:00-08:00',
-    'timeZone': 'America/Los_Angeles',
+    'dateTime': event_end,
+    'timeZone': 'Asia/Seoul',
   },
 }
 
+def change_event(time_obj, text):
+    EVENT['start']['dateTime'] = datetime.datetime(int(time_obj.year), int(time_obj.month), int(time_obj.day), int(time_obj.hour), 0, 0).isoformat()
+    EVENT['end']['dateTime'] = datetime.datetime(int(time_obj.year), int(time_obj.month), int(time_obj.day), int(time_obj.hour)+1, 0, 0).isoformat()
+    EVENT['summary'] = text
+    print(EVENT['start']['dateTime'])
+    return
 
-def main():
+def add_calendar(time_obj, text):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
+    change_event(time_obj, text) 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -48,31 +60,8 @@ def main():
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
-
     try:
         service = build('calendar', 'v3', credentials=creds)
         service.events().insert(calendarId='waniboyy@gmail.com', body=EVENT).execute()
-
-        # Call the Calendar API
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        print('Getting the upcoming 10 events')
-        events_result = service.events().list(calendarId='primary', timeMin=now,
-                                              maxResults=10, singleEvents=True,
-                                              orderBy='startTime').execute()
-        events = events_result.get('items', [])
-        
-        if not events:
-            print('No upcoming events found.')
-            return
-
-        # Prints the start and name of the next 10 events
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
-
     except HttpError as error:
         print('An error occurred: %s' % error)
-
-
-if __name__ == '__main__':
-    main()
