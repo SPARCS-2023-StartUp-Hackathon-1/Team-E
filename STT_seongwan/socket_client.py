@@ -20,7 +20,7 @@ RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
 
 # Socket connection parameters
-HOST = '192.168.1.76'
+HOST = '192.168.1.75'
 PORT = 9999
 
 
@@ -108,6 +108,7 @@ def listen_print_loop(responses, client_socket):
     final one, print a newline to preserve the finalized transcription.
     """
     num_chars_printed = 0
+    username = "박성완"
     for response in responses:
         if not response.results:
             continue
@@ -120,7 +121,7 @@ def listen_print_loop(responses, client_socket):
             continue
 
         # Display the transcription of the top alternative.
-        transcript = result.alternatives[0].transcript
+        transcript = result.alternatives[0].transcript + ";" + username
 
         # Display interim results, but with a carriage return at the end of the
         # line, so subsequent lines will overwrite them.
@@ -137,7 +138,6 @@ def listen_print_loop(responses, client_socket):
 
         else:
             print(transcript + overwrite_chars)
-
             client_socket.send(transcript.encode())
 
             # Exit recognition if any of the transcribed phrases could be
