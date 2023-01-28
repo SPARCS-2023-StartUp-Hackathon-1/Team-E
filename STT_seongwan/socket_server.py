@@ -7,7 +7,8 @@ from transformers import pipeline
 from papago_long import translate
 import chatGPT_api
 import datetime
-import GoogleCalendar
+from Googlecalendar import add_calendar
+from chatGPT_api import chatGPT
 
 openai.organization = "org-JuwVy84LcQyTpZiV5J75mEw6"
 openai.api_key = "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"
@@ -61,21 +62,25 @@ def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 �
         date_time_string = date_string.split("\n")[0].split(":")[1].strip()
         topic = date_string.split("\n")[1].split(":")[1].strip()
         date_time_obj = datetime.datetime.strptime(date_time_string, "%m월 %d일 오후 %H시")
-        
-        GoogleCalendar.add_calendar(date_time_obj, topic)
-
-        return "캘린더 저장 완료"
+        add_calendar(date_time_obj, topic)
+        return "구글 캘린더에 일정을 저장 완료했어요 :)"
     ### 회의 참여도 알려주기
-    elif user_command == "회의 참여도 알려주기" : 
-        pass
+    elif user_command == "회의 참여도 알려줘" :
+        result = ""
+        result += "발화 기반 회의 참여도 순위는 다음과 같습니다.\n"
+        participation = sort_transcript_by_length(get_speaker_word_count(whole_transcript))
+        for speaker in participation :
+            result += (speaker + "\n")
+        return result
     ### chatGPT를 통한 질의응답
     else :
+        english_full_script = translate("krTOen",get_full_script())
+        english_command = translate("krTOen",query)
+        QNA_scipt = chatGPT(english_command, english_full_script)
+        return QNA_scipt
         # chatGPT에서 에러가 발생 했을 경우
         if max_similaritys[-1][0] < 0.7 : # 이상한 명령어가 들어 왔을 경우
             return "chatty cat이 이해할수 없는 명령어에요😢 다른 명령어를 입력해주세요"
-
-    
-    
 
 def summerize_model(data) : # 요약 모델
     summarizer = pipeline("summarization", model="knkarthick/MEETING_SUMMARY")
