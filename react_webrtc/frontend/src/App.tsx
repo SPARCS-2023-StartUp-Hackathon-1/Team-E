@@ -15,7 +15,7 @@ const pc_config = {
     },
   ],
 };
-const SOCKET_SERVER_URL = "13.125.237.243:3001";
+const SOCKET_SERVER_URL = "192.168.1.10:8080";
 
 const App = () => {
   const socketRef = useRef<SocketIOClient.Socket>();
