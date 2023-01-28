@@ -20,7 +20,7 @@ RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
 
 # Socket connection parameters
-HOST = '192.168.1.10'
+HOST = '192.168.204.230'
 PORT = 9999
 
 

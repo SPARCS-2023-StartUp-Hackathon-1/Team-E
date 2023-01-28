@@ -22,7 +22,7 @@ MODEL = "text-embedding-ada-002"
 # 우리의 AI 비서가 처리 가능한 명령어
 COMMAND = ["A가 한 말 요약,정리해줘", "지금까지 회의 내용 요약,정리해줘" ,"캘린더에 저장해줘", "회의 참여도 알려줘"]
 # Socket connection parameters
-HOST = '192.168.1.10'
+HOST = '192.168.204.230'
 PORT = 9999
 
 speaker_word_count = dict()

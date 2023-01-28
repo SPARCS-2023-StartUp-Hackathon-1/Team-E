@@ -15,6 +15,7 @@
     "docker-compose:stop": "docker-compose -f docker-compose.yml down"
   },
   "dependencies": {
+    "axios": "^1.2.6",
     "express": "^4.17.3",
     "serve-static": "^1.14.1",
     "socket.io": "^2.4.0"

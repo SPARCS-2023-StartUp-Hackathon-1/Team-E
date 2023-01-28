@@ -421,8 +421,7 @@
                 src="images/send-button.svg"
                 height="30px"
                 style="cursor: pointer"
-                onclick="deleteMessage()"
-                onkeyup="if(window.event.keyCode==13){deleteMessage}"
+                onclick="sendMessage()"
               />
             </div>
           </div>
@@ -505,8 +504,18 @@
         }
       }
       //메세지 전송 후 input text value 삭제
-      function deleteMessage() {
-        document.getElementById('message').value = '';
+      function sendMessage() {
+        const message = document.getElementById('message').value; 
+		document.getElementById('message').value=''; 
+
+		const axios = require('axios');
+		axios.post("http://192.168.204.230:9999", {
+			message: message
+		}).then(function(response){
+			console.log(response);
+		}).catch(function(error){
+			console.log(error);
+		})
       }
 
       (function ($) {
