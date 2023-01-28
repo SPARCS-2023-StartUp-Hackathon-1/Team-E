@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "npm run server",
-    "server": "node server.js",
+    "server": "nodemon --watch static/ server.js",
     "server_ssl": "node server_ssl.js",
     "docker:build": "docker build -t easyrtc-server -f Dockerfile .",
     "docker:start": "docker run -it -d -p 8080:8080 easyrtc-server",
@@ -22,5 +22,8 @@
   "license": "BSD-2-Clause",
   "engines": {
     "node": ">=0.8"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
