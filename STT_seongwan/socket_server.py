@@ -1,4 +1,3 @@
-
 import openai
 import torch
 from sentence_transformers import SentenceTransformer, util
@@ -6,9 +5,13 @@ import socket
 from _thread import *
 from transformers import pipeline
 from papago_long import translate
+import chatGPT_api
+import datetime
+import GoogleCalendar
 
 openai.organization = "org-JuwVy84LcQyTpZiV5J75mEw6"
 openai.api_key = "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"
+YOUR_API_KEY = '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' # chatGPT API KEY
 openai.Engine.list()
 
 # Text embedding model
@@ -54,7 +57,14 @@ def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 �
         return result
     ### 회의에서 나온 요일 캘린더에 저장
     elif user_command == "캘린더에 저장해줘" : 
-        pass
+        date_string = chatGPT_api.chatGPT(user_command, YOUR_API_KEY)
+        date_time_string = date_string.split("\n")[0].split(":")[1].strip()
+        topic = date_string.split("\n")[1].split(":")[1].strip()
+        date_time_obj = datetime.datetime.strptime(date_time_string, "%m월 %d일 오후 %H시")
+        
+        GoogleCalendar.add_calendar(date_time_obj, topic)
+
+        return "캘린더 저장 완료"
     ### 회의 참여도 알려주기
     elif user_command == "회의 참여도 알려주기" : 
         pass

@@ -18,9 +18,9 @@ print(event_end)
 
 
 EVENT = {
-  'summary': 'Google I/O 2015',
-  'location': '800 Howard St., San Francisco, CA 94103',
-  'description': 'A chance to hear more about Google\'s developer products.',
+  'summary': '',
+  'location': '',
+  'description': '',
   'start': {
     'dateTime': event_start,
     'timeZone': 'Asia/Seoul',
@@ -31,13 +31,18 @@ EVENT = {
   },
 }
 
-def change_event() :
-    print(EVENT['start'])
+def change_event(time_obj, text):
+    EVENT['start']['dateTime'] = datetime.datetime(int(time_obj.year), int(time_obj.month), int(time_obj.day), int(time_obj.hour), 0, 0).isoformat()
+    EVENT['end']['dateTime'] = datetime.datetime(int(time_obj.year), int(time_obj.month), int(time_obj.day), int(time_obj.hour)+1, 0, 0).isoformat()
+    EVENT['summary'] = text
+    print(EVENT['start']['dateTime'])
+    return
 
-def add_calendar(time, text):
+def add_calendar(time_obj, text):
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
     """
+    change_event(time_obj, text) 
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -60,7 +65,3 @@ def add_calendar(time, text):
         service.events().insert(calendarId='waniboyy@gmail.com', body=EVENT).execute()
     except HttpError as error:
         print('An error occurred: %s' % error)
-
-
-change_event()
-add_calendar(1,2)
