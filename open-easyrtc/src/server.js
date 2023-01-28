@@ -18,7 +18,6 @@ process.title = "node-easyrtc";
 // Setup and configure Express http server. Expect a subfolder called "static" to be the web root.
 var app = express();
 app.use(serveStatic('static', {'index': ['index.html']}));
-//app.use(serveStatic('static', {'index': ['index.html']}));
 
 // Start Express http server on port 8080
 var webServer = http.createServer(app);
