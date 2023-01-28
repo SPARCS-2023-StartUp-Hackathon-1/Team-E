@@ -15,10 +15,12 @@ openai.api_key = "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"
 YOUR_API_KEY = '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' # chatGPT API KEY
 openai.Engine.list()
 
+ButtonPression = 0 # 0 : 안눌렸을때, 1 : 발표 시작, 2 : 발표 끝
+
 # Text embedding model
 MODEL = "text-embedding-ada-002"
 # 우리의 AI 비서가 처리 가능한 명령어
-COMMAND = ["A가 한 말 요약,정리해줘","지금까지 회의 내용 요약,정리해줘","캘린더에 저장해줘","회의 참여도 알려줘"]
+COMMAND = ["A가 한 말 요약,정리해줘", "지금까지 회의 내용 요약,정리해줘" ,"캘린더에 저장해줘", "회의 참여도 알려줘"]
 # Socket connection parameters
 HOST = '192.168.1.10'
 PORT = 9999
@@ -26,6 +28,7 @@ PORT = 9999
 speaker_word_count = dict()
 client_sockets = []
 whole_transcript = []
+button_transcript = []
 client_transcript = {}
 
 def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 우리 command와 유사한거 가져오기
@@ -43,27 +46,37 @@ def max_similaritys_command(query) : # 사용자의 입력값 중에서 가장 �
     user_command = max_similaritys[0][1] # 유저가 입력한 커멘드 중에서 우리의 커멘드와 가장 유사한거 일치시키기
 
     ### 사용자 한명 실시간 발표 요약
-    if user_command == "A가 한 말 요약,정리해줘" : 
+    if user_command == "A가 한 말 요약,정리해줘" or ButtonPression == 2: 
+        # 발표 버튼 누르면 서버로 알려줘 #     
         name, script = get_user_script(query) # 사용자의 입력값에서 명령어랑 타겟 이름 꺼내오기
+        if(ButtonPression == 2) : # 발표 종료 버튼이 눌렸을 때
+            script = get_full_presentation() # 발표 시작부터 끝까지 텍스트 저장
+            button_transcript = []
         eng_script = translate("krTOen",script) # papago로 영어로 번역
         eng_summerize = summerize_model(eng_script) # 영어로 번역한 발표 요약
         kor_summerize = translate("enTOkr",eng_summerize) # 다시 한국어로 번역
         result = name + "이 한 말을 요약해봤어요 :)\n" + kor_summerize
         return result
+
     ### 지금까지 회의 내용 요약
     elif user_command == "지금까지 회의 내용 요약,정리해줘" : 
         script = get_full_script() # 모든 회의록 가져오기
         kor_summerize = translate("enTOkr",summerize_model(translate("krTOen",script)))
         result = "지금까지의 회의 내용을 요약해 보았아요 :)\n" + kor_summerize
         return result
+
     ### 회의에서 나온 요일 캘린더에 저장
     elif user_command == "캘린더에 저장해줘" : 
-        date_string = chatGPT_api.chatGPT(user_command, YOUR_API_KEY)
+        # command를 가장 최근에 한 말로 넣기
+        for key, value in whole_transcript[-1].items() : # 가장 최근에 한 말 input으로 넣기
+            script = value 
+        date_string = chatGPT_api.chatGPT(user_command, script, YOUR_API_KEY)
         date_time_string = date_string.split("\n")[0].split(":")[1].strip()
         topic = date_string.split("\n")[1].split(":")[1].strip()
         date_time_obj = datetime.datetime.strptime(date_time_string, "%m월 %d일 오후 %H시")
         add_calendar(date_time_obj, topic)
         return "구글 캘린더에 일정을 저장 완료했어요 :)"
+
     ### 회의 참여도 알려주기
     elif user_command == "회의 참여도 알려줘" :
         result = ""
@@ -126,6 +139,13 @@ def get_full_script() : # 지금까지 회의 내용 요약하기
                 text += value
     return text
 
+def get_full_presentation() : # 지금까지 회의 내용 요약하기
+    text = ""
+    for transcript in button_transcript :
+        for key,value in transcript.items() :
+                text += value
+    return text
+
 # command에서 openAI text similarity로 우리 명령어 찾기
 # commamd에서 이름 뽑아서 script에서 찾기
 
@@ -143,6 +163,8 @@ def threaded(client_socket, addr):
             text_data, username = data.decode().split(';')
             print('>> Received from : ' + username," data : ", text_data)
             whole_transcript.append({username:text_data})
+            if(ButtonPression == 1) : # 발표시작 버튼이 눌렸을 때
+                button_transcript.append({username:text_data})
             speaker_word_count = sort_transcript_by_length(get_speaker_word_count(whole_transcript))
             """
             for key,value in whole_transcript :
