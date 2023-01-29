@@ -1,8 +1,13 @@
 #-*- coding: utf-8 -*-
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 import openai
 import argparse
 
-YOUR_API_KEY = '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'
+YOUR_API_KEY = os.environ.get('SEONGWAN_YOUR_API_KEY') # chatGPT API KEY
 
 
 def chatGPT(prompt, API_KEY=YOUR_API_KEY):

@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 import openai
 import torch
 from sentence_transformers import SentenceTransformer, util
@@ -10,9 +15,9 @@ import datetime
 from Googlecalendar import add_calendar
 from chatGPT_api import chatGPT
 
-openai.organization = "org-JuwVy84LcQyTpZiV5J75mEw6"
-openai.api_key = "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"
-YOUR_API_KEY = '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' # chatGPT API KEY
+openai.organization = os.environ.get('SEONGWAN_organization')
+openai.api_key = os.environ.get('SEONGWAN_YOUR_API_KEY')
+YOUR_API_KEY = os.environ.get('YOUR_API_KEY') # chatGPT API KEY
 openai.Engine.list()
 
 ButtonPression = 0 # 0 : 안눌렸을때, 1 : 발표 시작, 2 : 발표 끝

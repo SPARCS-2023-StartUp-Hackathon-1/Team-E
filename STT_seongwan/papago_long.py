@@ -1,8 +1,12 @@
 #-*- coding: utf-8 -*-
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 import requests
 
-client_id = "ZrM0JsMQut3cWxBeAc_L" # 개발자센터에서 발급받은 Client ID 값
-client_secret = "9Pcod12Rht" # 개발자센터에서 발급받은 Client Secret 값
+client_id = os.environ.get('PAPAGO_client_id') # chatGPT API KEY
+client_secret = os.environ.get('PAPAGO_client_secret') # 개발자센터에서 발급받은 Client Secret 값
 url = "https://openapi.naver.com/v1/papago/n2mt"
 
 def translate(option, data) :   

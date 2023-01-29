@@ -25,3 +25,4 @@ yarn-debug.log*
 yarn-error.log*
 STT_seongwan/test.py
 STT_seongwan/test.py
+.env
