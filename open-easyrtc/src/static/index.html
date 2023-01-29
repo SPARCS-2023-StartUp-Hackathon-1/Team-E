@@ -506,16 +506,16 @@
       //메세지 전송 후 input text value 삭제
       function sendMessage() {
         const message = document.getElementById('message').value; 
-		document.getElementById('message').value=''; 
-
-		const axios = require('axios');
-		axios.post("http://192.168.204.230:9999", {
-			message: message
-		}).then(function(response){
-			console.log(response);
-		}).catch(function(error){
-			console.log(error);
-		})
+        document.getElementById('message').value=''; 
+        console.log(message)
+        const axios = require('axios');
+        axios.post("http://192.168.204.197:9999", {
+          message: message
+        }).then(function(response){
+          console.log(response);
+        }).catch(function(error){
+          console.log(error);
+        })
       }
 
       (function ($) {

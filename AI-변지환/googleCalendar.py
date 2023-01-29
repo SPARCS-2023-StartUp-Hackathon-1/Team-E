@@ -3,10 +3,19 @@ import datetime
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
+from dotenv import load_dotenv
+import os 
+# load .env
+load_dotenv()
+
+CLIENT_ID = os.environ.get('GOOGLECALENDAR_client_id_API_KEY')
+CLIENT_SECERT = os.environ.get('GOOGLECALENDAR_CLIENTSECRET')
+
 # Use the OAuth credentials to authorize the API client
-creds = Credentials.from_authorized_user_info(info={"client_id":"550634476053-b3fr1mhbbp9rmdcqsld5n0c3b96a1rno.apps.googleusercontent.com",
-"client_secret":"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",
-"refresh_token":"https://oauth2.googleapis.com/token"})
+creds = Credentials.from_authorized_user_info(info={
+    "client_id":CLIENT_ID,
+    "client_secret":CLIENT_SECERT,
+    "refresh_token":"https://oauth2.googleapis.com/token"})
 
 # Build the Calendar API client
 calendar_service = build('calendar', 'v3', credentials=creds)

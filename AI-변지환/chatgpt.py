@@ -2,10 +2,15 @@
 import openai
 import argparse
 
-YOUR_API_KEY = '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'
+from dotenv import load_dotenv
+import os 
 
+# load .env
+load_dotenv()
 
-def chatGPT(prompt, API_KEY=YOUR_API_KEY):
+CHATGPT_API_KEY = os.environ.get('CHATGPT_API_KEY')
+
+def chatGPT(prompt, API_KEY=CHATGPT_API_KEY):
     
     # set api key
     openai.api_key = API_KEY
